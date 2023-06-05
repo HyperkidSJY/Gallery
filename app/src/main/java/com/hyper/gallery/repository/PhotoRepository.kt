@@ -1,23 +1,24 @@
 package com.hyper.gallery.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.hyper.gallery.models.Photo
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.liveData
+import com.hyper.gallery.paging.PhotoPagingSource
+import com.hyper.gallery.paging.SearchPagingSource
 import com.hyper.gallery.retrofit.FlickerApi
 import javax.inject.Inject
 
 class PhotoRepository@Inject constructor(private val flickerApi: FlickerApi) {
 
-    private val _photos = MutableLiveData<List<Photo>>()
-    val photos : LiveData<List<Photo>>
-        get() = _photos
+    fun getPhotos() = Pager(
+        config = PagingConfig(pageSize = 20, maxSize = 100),
+        pagingSourceFactory = {PhotoPagingSource(flickerApi)}
+    ).liveData
 
-
-    suspend fun getPhotos(){
-        val result = flickerApi.getPhotos()
-        if(result.isSuccessful && result.body() != null){
-            _photos.postValue(result.body()!!.photos.photo)
-        }
-    }
+    fun searchPhotos(query: String) = Pager(
+        config = PagingConfig(pageSize = 100, maxSize = 400),
+        pagingSourceFactory = {SearchPagingSource(flickerApi,query)}
+    ).liveData
 
 }

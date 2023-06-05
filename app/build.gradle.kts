@@ -67,4 +67,8 @@ dependencies {
     kapt ("com.github.bumptech.glide:compiler:4.15.1")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    val paging_version = "3.1.1"
+
+    implementation("androidx.paging:paging-runtime:$paging_version")
 }
